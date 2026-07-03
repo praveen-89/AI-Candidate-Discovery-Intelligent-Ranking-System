@@ -1,23 +1,54 @@
-.venv/
+# Python
 __pycache__/
 *.pyc
-.pytest_cache/
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/
+env.bak/
+venv.bak/
+
+# Environment Variables
 .env
+.env.local
+.env.*.local
 
-# Ignore data and outputs for repo size limits
-data/
-outputs/
+# Datasets & Embeddings
+# NEVER commit raw data or embedding cache
+datasets/raw/*
+datasets/processed/*
+datasets/embeddings/*
+!datasets/raw/.gitkeep
+!datasets/processed/.gitkeep
+!datasets/embeddings/.gitkeep
+
+# Ignore outputs and logs
+ai_engine/outputs/*
+!ai_engine/outputs/.gitkeep
+ai_engine/logs/*
+!ai_engine/logs/.gitkeep
 logs/
-models/
+*.log
 
-# Specific generated files
-outputs.zip
-profiling_results.json
-sample_candidates.json
-sample_submission.csv
+# Models
+ai_engine/models/*
+!ai_engine/models/.gitkeep
 
-# Ignore raw documents (if they aren't meant to be source controlled)
-# job_description.docx
-# README.docx
-# Dataset
-candidates.jsonl
+# Node (Frontend)
+node_modules/
+dist/
+build/
+.npm/
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# Testing
+.pytest_cache/
+coverage.xml
+htmlcov/
+.tox/
+.coverage

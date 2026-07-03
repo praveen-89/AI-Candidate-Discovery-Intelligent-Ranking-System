@@ -1,73 +1,42 @@
-# India Runs Data & AI Challenge - Candidate Ranking System
+# AI Talent Intelligence Platform
 
-## Working Source Code
-The core working source code is located in the `src/` directory. It is organized into modular pipelines:
-- `src/embeddings/`: Transformer-based embedding generation.
-- `src/retrieval/`: FAISS dense vector search.
-- `src/ranking/`: 8-factor linear blend hybrid ranking engine.
-- `src/explainability/`: Dynamic reason generation.
-- `src/core/`: Native .docx parsing for job descriptions.
+A scalable, production-grade monorepo architecture for enterprise AI candidate discovery and intelligent ranking.
 
-## Project Structure
-```text
-├── configs/
-├── docs/
-├── scripts/
-│   ├── inference.py
-│   └── profile_inference.py
-├── src/
-│   ├── config/
-│   ├── core/
-│   ├── data/
-│   ├── embeddings/
-│   ├── evaluation/
-│   ├── explainability/
-│   ├── preprocessing/
-│   ├── ranking/
-│   ├── retrieval/
-│   └── utils/
-├── tests/
-├── README.md
-├── requirements.txt
-└── pyproject.toml
-```
+## Monorepo Architecture
 
-## Requirements
-- **Python 3.11+**
-- **Hardware constraints:** Designed to run on a standard CPU with ≤ 16GB RAM.
-- **Dependencies:** 
-  - `sentence-transformers`
-  - `faiss-cpu`
-  - `python-docx`
-  - `pydantic`
-  (See `requirements.txt` for the full list)
+This repository is organized into distinct, decoupled modules to support independent development, scaling, and deployment.
 
-## Installation Instructions
-1. Clone this repository to your local machine.
-2. Create a clean virtual environment:
-   ```bash
-   python -m venv .venv
-   ```
-3. Activate the virtual environment:
-   - **Windows:** `.venv\Scripts\activate`
-   - **Linux/Mac:** `source .venv/bin/activate`
-4. Install all required dependencies:
-   ```bash
-   pip install -r requirements.txt
-   pip install python-docx
-   ```
+### 1. `ai_engine/`
+The core AI candidate ranking and discovery system. It handles parsing, embedding generation, dense retrieval, hybrid ranking, and explainability.
+- **Stack**: Python 3.11+, FAISS, SentenceTransformers
+- *See `ai_engine/README.md` for execution instructions.*
 
-## Scripts to Reproduce Results
-To reproduce the end-to-end inference pipeline and generate the top-100 ranked candidates:
+### 2. `backend/`
+The API layer that exposes the AI engine and manages business logic. 
+- **Stack**: FastAPI (Python)
+- *Note: The backend maintains strict decoupling from the AI engine and communicates only via service interfaces.*
 
-1. Ensure the dataset (`candidates.jsonl`) and the target job description (`job_description.docx`) are available. By default, the script looks in the repository root or `data/raw/`.
-2. Execute the inference script:
-   ```bash
-   python scripts/inference.py <path_to_candidates.jsonl> <path_to_output_submission.json> <path_to_manifest.json>
-   ```
+### 3. `frontend/`
+The user-facing dashboard for recruiters and administrators.
+- **Stack**: React, Vite
 
-**Example (using default paths):**
-```bash
-python scripts/inference.py
-```
-This script will autonomously parse the `.docx` job description, stream the candidates, generate vector embeddings, rank them using the hybrid scorer, and output the final `submission.json` and `manifest.json` files.
+### 4. `supabase/`
+Database definitions, migrations, and Row Level Security (RLS) policies.
+- **Stack**: PostgreSQL (Supabase)
+
+### 5. `shared/`
+Shared types, constants, schemas, and utilities used across the stack.
+
+### 6. `datasets/`
+Strict data management directory for local development.
+- `raw/`: Unmodified original datasets and documents (IGNORED in Git).
+- `processed/`: Transformed datasets (IGNORED in Git).
+- `embeddings/`: Cached FAISS indexes and numpy arrays (IGNORED in Git).
+
+### 7. `infra/`
+Deployment configurations, Docker files, and Nginx setups.
+
+## Setup Instructions
+
+Please refer to the `docs/` folder for detailed setup and architectural documentation.
+To initialize the monorepo, use the orchestration scripts provided in `scripts/`.

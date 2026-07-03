@@ -1,0 +1,2 @@
+-- Supabase schema — not yet implemented.
+-- This file will contain table definitions for the platform.
