@@ -1,0 +1,23 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.env
+
+# Ignore data and outputs for repo size limits
+data/
+outputs/
+logs/
+models/
+
+# Specific generated files
+outputs.zip
+profiling_results.json
+sample_candidates.json
+sample_submission.csv
+
+# Ignore raw documents (if they aren't meant to be source controlled)
+# job_description.docx
+# README.docx
+# Dataset
+candidates.jsonl

@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "india_runs_ai_challenge"
+version = "0.1.0"
+description = "Candidate ranking engine for India Runs Data & AI Challenge"
+requires-python = ">=3.11"
+authors = [
+    {name = "Hackathon Team", email = "team@example.com"}
+]
+dependencies = [
+    "pydantic>=2.0.0",
+    "pydantic-settings>=2.0.0",
+    "pandas>=2.0.0",
+    "faiss-cpu>=1.7.4",
+    "sentence-transformers>=2.2.0",
+    "numpy<2.0.0",
+    "scikit-learn>=1.3.0",
+    "rank-bm25>=0.2.2",
+    "python-docx>=1.1.0"
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "black>=23.0",
+    "flake8>=6.0"
+]
+
+[tool.setuptools]
+package-dir = {"" = "src"}
