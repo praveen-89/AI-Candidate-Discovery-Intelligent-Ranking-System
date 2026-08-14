@@ -1,0 +1,22 @@
+{
+  "pythonPath": "e:/India Run Hackathon/India_runs_data_and_ai_challenge/.venv/Scripts/python.exe",
+  "venvPath": "e:/India Run Hackathon/India_runs_data_and_ai_challenge",
+  "venv": ".venv",
+  "extraPaths": [
+    "e:/India Run Hackathon/India_runs_data_and_ai_challenge/backend",
+    "e:/India Run Hackathon/India_runs_data_and_ai_challenge/ai_engine"
+  ],
+  "include": [
+    "backend",
+    "ai_engine",
+    "shared"
+  ],
+  "exclude": [
+    ".venv",
+    "python311",
+    "**/__pycache__",
+    "**/*.egg-info"
+  ],
+  "typeCheckingMode": "basic",
+  "reportMissingModuleSource": "none"
+}

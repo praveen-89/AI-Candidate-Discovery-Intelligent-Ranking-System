@@ -1,0 +1,7 @@
+{
+    "python.defaultInterpreterPath": "e:\\India Run Hackathon\\India_runs_data_and_ai_challenge\\.venv\\Scripts\\python.exe",
+    "python.analysis.extraPaths": [
+        "e:\\India Run Hackathon\\India_runs_data_and_ai_challenge\\backend",
+        "e:\\India Run Hackathon\\India_runs_data_and_ai_challenge\\ai_engine"
+    ]
+}
