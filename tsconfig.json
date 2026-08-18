@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["frontend/*"]
+    }
+  },
+  "include": [
+    "frontend/**/*.ts",
+    "frontend/**/*.tsx"
+  ]
+}

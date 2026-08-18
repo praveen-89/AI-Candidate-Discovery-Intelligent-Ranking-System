@@ -18,7 +18,28 @@ class CacheStatusResponse(BaseModel):
     model: str
     dataset: str
 
+    model_config = {
+        "json_schema_extra": {
+            "example": {
+                "cache": True,
+                "vectors": 100000,
+                "model": "BAAI/bge-small-en-v1.5",
+                "dataset": "candidates.jsonl"
+            }
+        }
+    }
+
 class AIStatusResponse(BaseModel):
     engine: str
     cache: str
     vectors: int
+
+    model_config = {
+        "json_schema_extra": {
+            "example": {
+                "engine": "ready",
+                "cache": "loaded",
+                "vectors": 100000
+            }
+        }
+    }
