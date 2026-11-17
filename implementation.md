@@ -625,6 +625,236 @@ appropriate as text-on-light vs text-on-dark for that hue.
 
 ---
 
+## Phase 8 — Public marketing site (Home page + design system done; 6 pages pending)
+
+User supplied a full, detailed spec for a 7-page marketing site ("precision
+instrument" design: ink + electric-lime, distinct from the dashboard's
+corporate-blue theme). Agreed scope for this round (via `AskUserQuestion`):
+replace `/` with the new marketing site (old sign-in-landing content moved to
+a new `/login`); build the design system + Home page first, remaining 6 pages
+(`/product`, `/how-it-works`, `/scoring`, `/architecture`, `/use-cases`,
+`/docs`) in follow-up rounds.
+
+- **Isolated design system**: added a second, fully separate set of tokens in
+  `globals.css` (`--mkt-bg`, `--mkt-surface`, `--mkt-border`, `--mkt-text`,
+  `--mkt-text-secondary`, `--mkt-accent`, `--mkt-accent-ink`, plus the 8 fixed
+  `--color-factor-*` data-palette colors) alongside the dashboard's existing
+  `--background`/`--surface`/`--foreground`/`--accent-fg` tokens — deliberately
+  not shared, so neither theme can bleed into the other. A marketing-only
+  `ThemeToggleMkt` (mirrors the dashboard's `ThemeToggle` but styled with
+  `mkt-*`/lime instead of dashboard blue) exists for the same reason.
+- **Fonts**: Instrument Sans (`font-display` utility) and JetBrains Mono
+  (folded into the existing `font-mono` utility, so dashboard `font-mono`
+  usages like candidate IDs also benefit) loaded globally via `next/font/google`
+  in the root layout — one loading site, available everywhere, zero fallback
+  flash. (Named the next/font CSS variables `--instrument-sans`/
+  `--jetbrains-mono`, not `--font-display`/`--font-mono` — those are the
+  *Tailwind* theme variable names; reusing them for next/font's own variable
+  would have been a circular reference.)
+- **Route structure**: `app/(marketing)/layout.tsx` + `app/(marketing)/page.tsx`
+  (Home) — a route group so the marketing pages get their own
+  Navbar/Footer/fonts/background without affecting the URL or touching
+  `/dashboard` etc., which still use the root layout only. Old `app/page.tsx`
+  (the single-page sign-in landing from the earlier "add a landing page"
+  request) deleted — its sign-in flow now lives at `app/login/page.tsx`
+  (slimmed to just the Google sign-in, no marketing copy), which `/` and
+  `/dashboard`'s proxy redirect both point to in spirit (proxy still redirects
+  to `/`, which is now the marketing home, whose "Get Started"/header CTA
+  link to `/login`).
+- **Components built** (`components/marketing/`): `Navbar` (sticky,
+  blurred-on-scroll, mobile menu), `Footer`, `Button` (primary lime/secondary
+  outline/ghost), `ScoreBar` (the 8-segment brand mark — animates in on
+  scroll via Framer Motion, `prefers-reduced-motion`-aware), `FunnelViz`
+  (100,000 → 5,000 → 1,000 → 100, sqrt-scaled bar widths so the narrow end
+  stays visible, count-up numbers), `StatCounter` (requestAnimationFrame
+  count-up, triggers once on scroll into view), `ExplanationCard` (the
+  realistic candidate-result mock — score, Score Bar, matched/missing skill
+  chips, plain-language reasons), `BrowserFrame` (plain browser-chrome mock,
+  no screenshot needed), `CTABand`. `lib/marketing/factors.ts` is the single
+  source of truth for the 8 factors' labels/weights/colors (weights taken
+  directly from `ai_engine/src/config/settings.py`'s real `WEIGHT_*` defaults,
+  not invented) — every component that renders factor data reads from it.
+- **Content**: every number on the page (100,000+ profiles, ~36s, ~1s,
+  8 factors, 133-skill taxonomy, CPU-only, the funnel's 100K→5K→1K→100) is
+  real, taken from the user's spec / the actual codebase — no fabricated
+  metrics, logos, or testimonials, per the spec's explicit honesty rule.
+- **Real bug found and fixed while building**: `lucide-react` in this project
+  (a newer major version, `^1.31.0`) has dropped brand/logo icons — `Github`
+  doesn't exist in it, unlike older lucide-react majors. Caught by `tsc`
+  immediately (`TS2305: Module has no exported member 'Github'`) rather than
+  silently failing at runtime. Verified which other icons used on this page
+  (`Star`, `Menu`, `X`, `ArrowRight`, `Search`, `Sparkles`,
+  `MessageSquareQuote`) actually exist in the installed version before
+  shipping, rather than assuming. Fixed by adding a small inline
+  `GithubIcon.tsx` SVG, matching the pattern the login page's Google icon
+  already used.
+- Validated: `tsc --noEmit` clean, `.next` cache cleared and dev server
+  restarted (new `framer-motion` dependency), confirmed `/` (home), `/login`,
+  and `/dashboard` (redirects unauthenticated, as before) all respond
+  correctly, and the hero/funnel/CTA copy renders in the server-rendered HTML.
+- **Pending** (next rounds, per the agreed delivery order): `/product`,
+  `/how-it-works`, `/scoring` (including the interactive weight-slider
+  explorer), `/architecture`, `/use-cases`, `/docs`. The spec's optional
+  `/about` page was not committed to either way.
+
+### Follow-up: hero didn't fit the viewport, and lime read as unprofessional
+
+User feedback after seeing the live Home page: the hero (copy + CTA + card
+stack + funnel, all stacked in one bordered section) overflowed well past
+100vh, so the CTAs weren't visible without scrolling, and the electric-lime
+accent (`#C6F432`) read as unprofessional rather than "precision instrument."
+
+- Pulled the funnel out of the hero section into its own section below.
+  Hero is now `min-h-[calc(100vh-4rem)]` (4rem = the sticky navbar's height)
+  with `flex items-center`, so the headline/CTA/card-stack vertically center
+  and fit within the first viewport without scrolling.
+- Replaced the lime accent with a refined amber/gold (`#e3a53d` dark /
+  `#8a5a0f` light) — still distinct from the dashboard's blue, closer to the
+  spec's own "Bloomberg terminal" reference point than the original neon lime.
+
+### Build log: remaining 6 marketing pages (done)
+
+Built out the rest of the site per the original spec, reusing the Phase 8
+component set plus new ones where the spec called for genuinely different
+interaction patterns:
+
+- **New components**: `FeatureRow` (zig-zag feature sections, used 7x on
+  `/product`), `PipelineStepper` (click-to-expand horizontal stepper, used on
+  `/how-it-works` for the 7-step pipeline), `WeightExplorer` (8 live sliders
+  + a `recharts` donut that recomputes a sample candidate's score in real
+  time — `recharts` was already a dependency, no new install needed),
+  `ArchitectureDiagram` (plain box-and-arrow system diagram, no illustration
+  asset needed), `PersonaCard`, `CodeBlock` (copy-to-clipboard), `Tabs`,
+  `EndpointRow` (GET/POST method badges).
+- **`/product`**: 7 feature rows (batch discovery, real-time upload, job
+  creation, explainability, incremental indexing, security/RLS, dashboard)
+  with inline representative UI mocks, plus an 8-tile recap grid.
+- **`/how-it-works`**: the full Parse→Extract→Embed→Retrieve→Rank→Explain→Review
+  pipeline as an interactive stepper (each step shows input/process/output,
+  some with a real code/data snippet), a batch-vs-real-time comparison, and
+  the funnel again at full width.
+- **`/scoring`**: big Score Bar hero, the interactive weight explorer (sliders
+  default to the real `WEIGHT_*` values; the sample candidate's sub-scores
+  used are real numbers from an actual test run logged earlier in this
+  session, not invented), one card per factor, an annotated anatomy of the
+  `ExplanationCard`, and the fairness note from the spec.
+- **`/architecture`**: the system diagram, 8 monorepo module cards, a tech
+  stack table, and performance/security panels with the real figures (36s,
+  16GB RAM, CPU-only, RLS, no service-role key for data access).
+- **`/use-cases`**: 4 persona cards (recruiter, TA lead, staffing agency,
+  hiring manager) — problem → how the platform helps → which feature, no
+  fabricated outcomes, per the spec's honesty rule.
+- **`/docs`**: two-pane layout (sticky "on this page" anchor nav + content),
+  3-tab quickstart with copy-button terminal blocks, env var table, API
+  reference with method-colored endpoint rows, candidate schema field list,
+  and a Docker Compose deployment note.
+- **Two real bugs found and fixed**:
+  1. `lucide-react` in this project doesn't export `Github` (brand icons
+     dropped in this major version) — caught by `tsc`, fixed with a small
+     inline `GithubIcon.tsx` SVG. Verified every other newly-used icon
+     (`UploadCloud`, `ShieldCheck`, `Boxes`, `UserRound`, etc.) actually
+     exists in the installed version before shipping, rather than assuming.
+  2. `/use-cases` 500'd at runtime: it was a Server Component passing
+     `{icon: SomeLucideIcon, ...}` objects as plain prop data into a Client
+     Component (`PersonaCard`) — React can't serialize a raw function
+     reference across that boundary. This is different from rendering an
+     icon as JSX directly (`<Icon />`), which Next's RSC layer does handle
+     specially — the bug was specifically storing the component *reference*
+     as data inside a plain object. Fixed by making the page itself a Client
+     Component (consistent with every other marketing page). Confirmed no
+     other server-component page (`/architecture`, `/docs`) has the same
+     pattern — both only render icons directly as JSX or pass already-
+     rendered elements (e.g. `content: <CodeBlock />`) across the boundary,
+     which is safe.
+- Validated: `tsc --noEmit` clean, all 8 marketing/auth routes (`/`,
+  `/product`, `/how-it-works`, `/scoring`, `/architecture`, `/use-cases`,
+  `/docs`, `/login`) return 200 against the live dev server, re-checked after
+  the `/use-cases` fix.
+- **Not built**: the spec's optional 8th page, `/about`.
+
+## Phase 9 — Dashboard redesign: "Shortlist Ledger" (tokens + AppFrame + Overview done; 7 screens pending)
+
+User supplied a full, detailed spec for a complete recruiter-dashboard redesign
+("Shortlist Ledger": Paper/Graphite, job-first, Score Strand as the one
+chromatic system, no KPI cards/radar chart/medal badges). Agreed scope for
+this round (via `AskUserQuestion`): full replacement of the current blue
+theme and pages (same routes, rebuilt screen-by-screen, not a parallel `/v2`
+build); this round delivers the design tokens, the AppFrame shell, and a
+fully working Overview screen wired to real data. Remaining 7 screens
+(Candidates, Jobs, Uploads, Runs, System, Candidate deep-link, Sign-in) and
+the heavier components (DossierPane, LedgerTable, WeightLens, CompareTray,
+CareerTimeline) are explicitly deferred to follow-up rounds.
+
+- **Tokens** (`globals.css`): replaced the dashboard's `:root`/`.dark`
+  background/surface/border/foreground/muted-foreground/accent-fg values
+  with the spec's Paper (light default) and Graphite (dark) values — same
+  token *names*, so every existing dashboard component (old `Sidebar`,
+  `TopNav`, `StatsCard`, `CandidateTable`, etc., not yet migrated to the new
+  design) re-themes to Paper/Graphite automatically, even before its layout
+  is rebuilt. Also replaced the `violet-*` accent scale (previously blue,
+  from an earlier request) with the spec's signal vermilion — same technique,
+  same reasoning: one override point re-themes every old
+  `bg-violet-600`/`text-violet-400` usage at once. Added new tokens this
+  redesign needed that didn't exist before: `--positive`/`--caution`/
+  `--negative` (muted, ink-like semantic states) and 8 new
+  `--color-ledger-*` factor colors (muted/print-like, ~15% lightened in
+  Graphite) — kept distinctly named from the marketing site's own
+  `--color-factor-*` (brighter, fixed-across-themes) so the two never collide;
+  the marketing site (`mkt-*` tokens) is untouched and confirmed still
+  rendering correctly after this change.
+- **Fonts**: added Newsreader (serif, for scores/ranks/funnel counts —
+  registered as the `font-serif` utility) and swapped the UI body font from
+  plain Inter to Inter Tight (denser, per the spec's preference), both via
+  `next/font/google` in the root layout alongside the already-loaded
+  Instrument Sans and JetBrains Mono. Verified via the font's underlying
+  `font-data.json` (not a plain `require()`, which doesn't work for
+  `next/font/google`'s special export mechanism) that Newsreader, Fraunces,
+  Inter Tight, and Geist are all actually available before committing to them.
+- **New components** (`components/ledger/`): `ScoreStrand` (the signature
+  component — one stacked bar per candidate, segment widths from
+  `reasons.ranking_score_breakdown`, native-tooltip accessible, screen-reader
+  label summarizing the full breakdown), `ScoreNumeral` (serif, tabular,
+  integer in lists / decimal in the dossier), `FunnelRail` (click-to-expand,
+  replaces the KPI card row), `DistributionRibbon` (histogram + a
+  pointer/keyboard-draggable shortlist threshold line), `SkillCoverageMatrix`
+  (filled/hollow squares, flags required skills nobody has), `JobSwitcher`,
+  `LeftRail`, `StatusBar` (polls `getHealth`/`getAIStatus` every 15s, shows a
+  "Warming up engine…" state instead of a blank screen during cold start),
+  `CommandPalette` (⌘K/Ctrl+K, functional — navigates screens and switches
+  jobs by typing, not yet a candidate-ID lookup since no such endpoint
+  exists), `AppFrame` (composes all of the above into the 52px-top-bar /
+  56px-left-rail / 28px-status-bar frame the spec calls for).
+- **Overview screen** (`app/dashboard/page.tsx`, fully rewritten): job
+  header (serif title, skill tags, experience/industry/created date), the
+  Funnel Rail, a two-column body — Leaderboard (top 25, `ScoreStrand` +
+  serif `ScoreNumeral`, no medal badges, no per-factor decimal columns) on
+  the left, Distribution Ribbon + Skill Coverage Matrix (top 8 above the
+  shortlist line) + a computed "hardest to find" list (required skills
+  missing most often) on the right. Empty state when the user has no jobs
+  yet: one sentence + an inline paste-a-JD form, no illustration — killing
+  the old "Welcome to AI Talent Intelligence" greeting + 4 KPI cards +
+  radar chart entirely, per the spec's explicit list of clichés to remove.
+  Wired to real endpoints: `listJobs()` for the switcher, `getExistingMatches()`
+  (already built in Phase 6) for the ranked leaderboard — no mock data.
+  Active job persisted in `localStorage` so it survives a refresh.
+- Validated: `tsc --noEmit` clean, `.next` cleared and dev server restarted
+  (new fonts), confirmed `/`, `/login` render and `/dashboard`/`/jobs`/
+  `/candidates` still correctly 307-redirect when unauthenticated (proxy
+  behavior unchanged), confirmed the marketing site (`/architecture`, tested
+  live) still renders correctly post-token-change. **Not independently
+  verified**: the actual authenticated Overview render — no browser
+  automation available in this environment to complete Google sign-in, so
+  this needs the user to check directly.
+- **Deliberately not done this round**: virtualized/sortable table (Top 25
+  is small enough that it wasn't needed yet — real virtualization matters
+  more for the full Top-100 Candidates explorer, a later round), Weight Lens,
+  Compare Tray, Dossier split-pane (selecting a leaderboard row doesn't yet
+  open anything — next round), migrating the other 5 screens' *layouts* (they
+  already inherit the new color tokens, but still have their old
+  KPI-card/radar-chart/medal-badge structure until rebuilt).
+
+---
+
 ## Open items (flagged, not blocking)
 
 1. **Scoring fairness**: uploaded resumes always score weaker on the behavioral sub-score
