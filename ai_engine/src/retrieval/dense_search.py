@@ -51,6 +51,19 @@ class DenseRetriever:
         else:
             self.mock_db.extend(embeddings)
 
+    def persist(self, faiss_path: str, ids_path: str):
+        """
+        Convenience wrapper to save both the vector index and the id mapping after an
+        incremental `add_to_index` call (e.g. after indexing a newly uploaded resume),
+        so the addition survives a process restart.
+        """
+        import numpy as np
+        ordered_ids = [self.id_mapping[i] for i in range(len(self.id_mapping))]
+        os.makedirs(os.path.dirname(ids_path), exist_ok=True)
+        np.save(ids_path, np.array(ordered_ids))
+        self.save_index(faiss_path)
+        logger.info(f"Persisted index ({len(ordered_ids)} vectors) and id mapping to disk.")
+
     def save_index(self, path: str):
         if HAS_FAISS:
             try:

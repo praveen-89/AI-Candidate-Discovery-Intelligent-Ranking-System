@@ -71,7 +71,7 @@ def build_candidate_text(cand: dict) -> str:
     headline = profile.get("headline") or ""
     summary = profile.get("summary") or ""
     yoe = profile.get("years_of_experience")
-    industry = profile.get("industry") or ""
+    industry = profile.get("current_industry") or profile.get("industry") or ""
     
     if headline: parts.append(f"Headline: {headline}")
     if yoe is not None: parts.append(f"Experience: {yoe} years")
@@ -84,7 +84,7 @@ def build_candidate_text(cand: dict) -> str:
         parts.append("Career History:")
         for job in career:
             title = job.get("title") or ""
-            company = job.get("company_name") or ""
+            company = job.get("company") or job.get("company_name") or ""
             desc = job.get("description") or ""
             is_current = " (Current)" if job.get("is_current") else ""
             if title or company:
@@ -106,9 +106,9 @@ def build_candidate_text(cand: dict) -> str:
     if edu_list:
         edu_strs = []
         for edu in edu_list:
-            degree = edu.get("degree_name") or ""
+            degree = edu.get("degree") or edu.get("degree_name") or ""
             field = edu.get("field_of_study") or ""
-            inst = edu.get("institution_name") or ""
+            inst = edu.get("institution") or edu.get("institution_name") or ""
             if degree or field:
                 edu_strs.append(f"{degree} in {field} from {inst}")
         parts.append(f"Education: {'; '.join(edu_strs)}")

@@ -25,6 +25,13 @@ sys.path.insert(0, os.path.join(_AI_ENGINE_DIR, "src"))
 # Ensure the working directory is the repo root so relative config paths resolve
 os.chdir(_ROOT_DIR)
 
+# Load the repo-root .env (if present) before config.settings reads os.getenv().
+try:
+    from dotenv import load_dotenv
+    load_dotenv(os.path.join(_ROOT_DIR, ".env"))
+except ImportError:
+    pass
+
 from data.loader import stream_candidates
 from data.validator import stream_valid_candidates
 from preprocessing.feature_extractor import extract_all_features

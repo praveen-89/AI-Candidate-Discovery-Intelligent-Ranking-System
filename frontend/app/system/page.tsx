@@ -62,8 +62,8 @@ export default function SystemPage() {
   return (
     <AppShell pageTitle="System Status">
       <div className="mb-8">
-        <h2 className="text-2xl font-bold text-slate-100">System Monitoring</h2>
-        <p className="mt-1 text-sm text-slate-400">
+        <h2 className="text-2xl font-bold text-foreground">System Monitoring</h2>
+        <p className="mt-1 text-sm text-muted-foreground">
           Live diagnostic information for the FastAPI backend and AI Engine.
         </p>
       </div>
@@ -94,7 +94,7 @@ export default function SystemPage() {
             <SystemStatusRow label="Index Valid" value={cacheStatus?.cache ? "Yes" : "No"} />
             <SystemStatusRow label="Total Vectors" value={formatNumber(cacheStatus?.vectors || 0)} />
             <SystemStatusRow label="Dataset" value={<span className="font-mono text-xs">{cacheStatus?.dataset || "—"}</span>} />
-            <SystemStatusRow label="Model" value={<span className="font-mono text-xs text-sky-400">{cacheStatus?.model || "—"}</span>} />
+            <SystemStatusRow label="Model" value={<span className="font-mono text-xs text-sky-600 dark:text-sky-400">{cacheStatus?.model || "—"}</span>} />
           </SystemStatusCard>
         )}
 
@@ -105,24 +105,24 @@ export default function SystemPage() {
               {manifest ? (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                   <div>
-                    <p className="text-xs text-slate-500 mb-1">Run Timestamp</p>
-                    <p className="text-sm font-medium text-slate-200">{formatTimestamp(manifest.run_timestamp_utc)}</p>
+                    <p className="text-xs text-muted-foreground mb-1">Run Timestamp</p>
+                    <p className="text-sm font-medium text-muted-foreground">{formatTimestamp(manifest.run_timestamp_utc)}</p>
                   </div>
                   <div>
-                    <p className="text-xs text-slate-500 mb-1">Processed Candidates</p>
-                    <p className="text-sm font-medium text-slate-200">{formatNumber(manifest.total_candidates_processed)}</p>
+                    <p className="text-xs text-muted-foreground mb-1">Processed Candidates</p>
+                    <p className="text-sm font-medium text-muted-foreground">{formatNumber(manifest.total_candidates_processed)}</p>
                   </div>
                   <div>
-                    <p className="text-xs text-slate-500 mb-1">Latency</p>
-                    <p className="text-sm font-medium text-slate-200">{formatLatency(manifest.end_to_end_latency_seconds)}</p>
+                    <p className="text-xs text-muted-foreground mb-1">Latency</p>
+                    <p className="text-sm font-medium text-muted-foreground">{formatLatency(manifest.end_to_end_latency_seconds)}</p>
                   </div>
                   <div>
-                    <p className="text-xs text-slate-500 mb-1">Model Config</p>
-                    <p className="text-sm font-mono text-slate-400 truncate">{manifest.model_used}</p>
+                    <p className="text-xs text-muted-foreground mb-1">Model Config</p>
+                    <p className="text-sm font-mono text-muted-foreground truncate">{manifest.model_used}</p>
                   </div>
                 </div>
               ) : (
-                <p className="text-sm text-slate-500 py-4">No manifest available. Run the AI ranking pipeline first.</p>
+                <p className="text-sm text-muted-foreground py-4">No manifest available. Run the AI ranking pipeline first.</p>
               )}
             </SystemStatusCard>
           </div>

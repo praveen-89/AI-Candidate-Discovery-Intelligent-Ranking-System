@@ -39,9 +39,9 @@ export function RadarChart({ subScores }: RadarChartProps) {
           <Radar
             name="Score"
             dataKey="A"
-            stroke="#8b5cf6"
-            fill="#8b5cf6"
-            fillOpacity={0.4}
+            stroke="#3573e6"
+            fill="#3573e6"
+            fillOpacity={0.35}
           />
           <Tooltip
             contentStyle={{
@@ -50,7 +50,7 @@ export function RadarChart({ subScores }: RadarChartProps) {
               borderRadius: "0.5rem",
               color: "#f1f5f9",
             }}
-            itemStyle={{ color: "#a78bfa" }}
+            itemStyle={{ color: "#5b9bf5" }}
             formatter={(value: any) => [`${value}%`, "Score"]}
           />
         </RechartsRadarChart>

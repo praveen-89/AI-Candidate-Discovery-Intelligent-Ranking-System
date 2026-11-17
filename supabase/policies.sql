@@ -1,1 +1,15 @@
--- Row Level Security policies — not yet implemented.
+-- Row Level Security policies — reference copy only.
+--
+-- These are already included in schema.sql, which is the one file you run.
+-- This file exists purely so the RLS rules are reviewable on their own,
+-- matching supabase/README.md's description of what each file holds.
+
+-- Tables: owner-only access via auth.uid() = owner_user_id
+--   jobs_select_own / jobs_insert_own / jobs_update_own / jobs_delete_own
+--   resumes_select_own / resumes_insert_own / resumes_update_own / resumes_delete_own
+--
+-- Storage: owner-only access via the first path segment matching auth.uid()
+--   resumes_storage_own          (bucket: resumes)
+--   job_descriptions_storage_own (bucket: job-descriptions)
+--
+-- See schema.sql for the full, runnable definitions.

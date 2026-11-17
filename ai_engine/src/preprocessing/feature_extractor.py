@@ -167,7 +167,8 @@ def extract_all_features(cand: Dict[str, Any]) -> Dict[str, Any]:
 
     skills = cand.get("skills", [])
     raw_skills = [s.get("name", "").lower() for s in skills if s.get("name")]
-    industry = (cand.get("profile", {}).get("industry") or "").lower()
+    profile = cand.get("profile", {})
+    industry = (profile.get("current_industry") or profile.get("industry") or "").lower()
 
     features = {
         "candidate_id": cand_id,

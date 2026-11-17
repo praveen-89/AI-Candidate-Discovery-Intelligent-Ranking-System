@@ -3,21 +3,80 @@
 @theme {
   --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --font-mono: "ui-monospace", SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+
+  /*
+   * Accent color: every `violet-*` utility class across the app renders from
+   * this scale. Overriding it here (rather than renaming classes in every
+   * component) re-themes the whole product from one place. Moved off the
+   * default purple/indigo pairing (reads as a generic "AI startup" template)
+   * to a single, restrained corporate blue — no gradient partner needed.
+   * Works unchanged in both light and dark mode.
+   */
+  --color-violet-50: #eff6ff;
+  --color-violet-100: #dbeafe;
+  --color-violet-200: #bfdbfe;
+  --color-violet-300: #93c5fd;
+  --color-violet-400: #5b9bf5;
+  --color-violet-500: #3573e6;
+  --color-violet-600: #2159c9;
+  --color-violet-700: #1a47a3;
+  --color-violet-800: #173a82;
+  --color-violet-900: #15306a;
+  --color-violet-950: #0d1d42;
 }
 
 @custom-variant dark (&:is(.dark *));
 
-@layer base {
-  :root {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-  }
+/*
+ * Theme tokens. Components use `bg-background`, `bg-surface`, `border-border`,
+ * `text-foreground`, `text-muted-foreground` (generated automatically by
+ * Tailwind from the `@theme inline` block below) instead of hardcoded
+ * `slate-*` classes, so the same markup renders correctly in both themes —
+ * only the values here change between `:root` (light) and `.dark`.
+ */
+:root {
+  --background: #f7f8fa;
+  --surface: #ffffff;
+  --surface-hover: #f1f3f5;
+  --input: #f1f3f5;
+  --border: #e5e7eb;
+  --foreground: #0f172a;
+  --muted-foreground: #64748b;
+  /*
+   * Accent text/icon color — used wherever violet appears as plain text or an
+   * icon (not as a tinted chip background). violet-400 reads fine on a dark
+   * background but is too light for contrast on a light one; violet-600
+   * (the same shade used for solid buttons) is the light-mode equivalent.
+   */
+  --accent-fg: #2159c9;
+}
+
+.dark {
+  --background: #020617;
+  --surface: #0f172a;
+  --surface-hover: #1e293b;
+  --input: #0b1220;
+  --border: #1e2a3f;
+  --foreground: #f1f5f9;
+  --muted-foreground: #94a3b8;
+  --accent-fg: #5b9bf5;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-hover: var(--surface-hover);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-foreground: var(--foreground);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent-fg: var(--accent-fg);
 }
 
 @layer base {
   body {
-    background-color: theme('colors.slate.950');
-    color: theme('colors.slate.300');
+    background-color: var(--background);
+    color: var(--foreground);
     font-feature-settings: "rlig" 1, "calt" 1;
   }
 }
@@ -33,10 +92,10 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: theme('colors.slate.700');
+  background: var(--border);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: theme('colors.slate.600');
+  background: var(--muted-foreground);
 }

@@ -62,8 +62,8 @@ export default function DashboardPage() {
   return (
     <AppShell pageTitle="Dashboard">
       <div className="mb-6">
-        <h2 className="text-2xl font-bold text-slate-100">Welcome to AI Talent Intelligence</h2>
-        <p className="text-sm text-slate-400 mt-1">
+        <h2 className="text-2xl font-bold text-foreground">Welcome to AI Talent Intelligence</h2>
+        <p className="text-sm text-muted-foreground mt-1">
           Discover, rank and understand the best candidates using semantic retrieval and hybrid AI scoring.
         </p>
       </div>
@@ -103,14 +103,14 @@ export default function DashboardPage() {
 
       <div className="grid grid-cols-1 gap-6 xl:grid-cols-3">
         <div className="xl:col-span-2">
-          <h3 className="mb-4 text-lg font-semibold text-slate-200">Top Candidates</h3>
-          <div className="rounded-xl border border-slate-700/50 bg-slate-800/30 p-1">
+          <h3 className="mb-4 text-lg font-semibold text-muted-foreground">Top Candidates</h3>
+          <div className="rounded-xl border border-border bg-surface p-1">
             {loading ? <SkeletonTable rows={5} /> : <TopCandidatesTable candidates={top10} />}
           </div>
         </div>
 
         <div>
-          <h3 className="mb-4 text-lg font-semibold text-slate-200">System Status</h3>
+          <h3 className="mb-4 text-lg font-semibold text-muted-foreground">System Status</h3>
           {loading ? (
             <div className="space-y-3">
                <SkeletonCard lines={2} />

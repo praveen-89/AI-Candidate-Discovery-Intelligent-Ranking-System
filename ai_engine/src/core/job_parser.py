@@ -1,7 +1,8 @@
 import os
 import re
-from typing import Dict, Any, List
+from typing import Dict, Any, List, Optional
 from utils.logger import get_logger
+from core.skills_taxonomy import KNOWN_SKILLS
 
 logger = get_logger(__name__)
 
@@ -18,10 +19,18 @@ class JobParser:
     Generates a semantic query for vector search.
     """
     
-    def __init__(self, jd_path: str):
+    def __init__(self, jd_path: Optional[str] = None, raw_text: Optional[str] = None, job_id: Optional[str] = None):
+        """
+        Either `jd_path` (a .docx/.txt file on disk) or `raw_text` (already-extracted
+        job description text, e.g. pasted into a form) may be supplied. `job_id` is an
+        optional caller-supplied identifier carried through to the structured output so
+        callers can track which job a parse result belongs to.
+        """
         self.jd_path = jd_path
-        self.raw_text = ""
+        self.job_id = job_id
+        self.raw_text = raw_text or ""
         self.structured_job: Dict[str, Any] = {
+            "job_id": job_id,
             "title": "",
             "skills": [],
             "experience_years": None,
@@ -29,17 +38,28 @@ class JobParser:
             "responsibilities": [],
             "semantic_query": ""
         }
-        
+
+    @classmethod
+    def from_text(cls, raw_text: str, job_id: Optional[str] = None) -> "JobParser":
+        """
+        Builds a JobParser directly from raw job description text (no file on disk),
+        e.g. text pasted into a "create job" form.
+        """
+        parser = cls(jd_path=None, raw_text=raw_text, job_id=job_id)
+        return parser
+
     def parse(self) -> Dict[str, Any]:
         """
-        Parses the document and populates the structured job object.
+        Parses the document/text and populates the structured job object.
         """
-        if not os.path.exists(self.jd_path):
+        if self.raw_text.strip():
+            # Raw text was supplied directly (e.g. from_text()) — nothing to read from disk.
+            pass
+        elif not self.jd_path or not os.path.exists(self.jd_path):
             logger.warning(f"JD file not found at {self.jd_path}. Using fallback query.")
             self._set_fallback_query()
             return self.structured_job
-            
-        if self.jd_path.lower().endswith('.docx'):
+        elif self.jd_path.lower().endswith('.docx'):
             if HAS_DOCX:
                 self._parse_docx()
             else:
@@ -48,11 +68,11 @@ class JobParser:
                 return self.structured_job
         else:
             self._parse_text()
-            
+
         self._extract_entities()
         self._build_semantic_query()
         return self.structured_job
-        
+
     def _parse_docx(self):
         doc = docx.Document(self.jd_path)
         self.raw_text = "\n".join([p.text for p in doc.paragraphs if p.text.strip()])
@@ -67,27 +87,18 @@ class JobParser:
         strict CPU/memory constraints without an external LLM endpoint.
         """
         text = self.raw_text.lower()
-        
+
         # 1. Extract Title (assume first line is title usually)
         lines = [l.strip() for l in self.raw_text.split('\n') if l.strip()]
         if lines:
             self.structured_job["title"] = lines[0]
-        
-        # 2. Extract Skills
-        known_skills = [
-            "python", "java", "c++", "machine learning", "deep learning", 
-            "nlp", "vector database", "faiss", "transformers", "pytorch", 
-            "tensorflow", "aws", "gcp", "azure", "docker", "kubernetes",
-            "sql", "nosql", "llm", "langchain", "qdrant", "pinecone",
-            "sentence transformers", "xgboost", "retrieval", "ranking",
-            "a/b testing", "ndcg"
-        ]
-                        
+
+        # 2. Extract Skills (matched against the dataset's real skill vocabulary)
         found_skills = set()
-        for skill in known_skills:
-            if re.search(r'\b' + re.escape(skill) + r'\b', text):
+        for skill in KNOWN_SKILLS:
+            if re.search(r'\b' + re.escape(skill.lower()) + r'\b', text):
                 found_skills.add(skill)
-                
+
         self.structured_job["skills"] = list(found_skills)
         
         # 3. Extract Experience

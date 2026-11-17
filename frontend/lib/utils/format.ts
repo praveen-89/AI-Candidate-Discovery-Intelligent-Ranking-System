@@ -39,11 +39,15 @@ export function clamp(value: number, min: number, max: number): number {
   return Math.min(Math.max(value, min), max);
 }
 
-/** Return a colour class based on a 0–1 score. */
+/**
+ * Return a colour class based on a 0–1 score. The -400 shades read well on a
+ * dark background but are too light for contrast on a light one, so light
+ * mode uses a darker shade of the same hue via the `dark:` variant.
+ */
 export function scoreColorClass(score: number): string {
-  if (score >= 0.75) return "text-emerald-400";
-  if (score >= 0.5) return "text-amber-400";
-  return "text-red-400";
+  if (score >= 0.75) return "text-emerald-600 dark:text-emerald-400";
+  if (score >= 0.5) return "text-amber-600 dark:text-amber-400";
+  return "text-red-600 dark:text-red-400";
 }
 
 /** Return a background colour class for score bars. */

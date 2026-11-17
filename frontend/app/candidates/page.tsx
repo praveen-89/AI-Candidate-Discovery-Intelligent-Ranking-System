@@ -33,13 +33,13 @@ export default function CandidatesPage() {
   return (
     <AppShell pageTitle="Candidates">
       <div className="mb-6">
-        <h2 className="text-2xl font-bold text-slate-100">Ranked Candidates</h2>
-        <p className="mt-1 text-sm text-slate-400">
+        <h2 className="text-2xl font-bold text-foreground">Ranked Candidates</h2>
+        <p className="mt-1 text-sm text-muted-foreground">
           Browse and filter all candidates processed by the AI Engine.
         </p>
       </div>
 
-      <div className="rounded-xl border border-slate-700/50 bg-slate-800/30 p-4 shadow-lg">
+      <div className="rounded-xl border border-border bg-surface p-4 shadow-lg">
         {loading ? (
           <SkeletonTable rows={10} />
         ) : error ? (

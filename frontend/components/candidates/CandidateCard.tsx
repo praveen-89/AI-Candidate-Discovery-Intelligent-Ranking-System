@@ -13,11 +13,11 @@ interface CandidateCardProps {
 
 export function CandidateCard({ candidate: c, rank }: CandidateCardProps) {
   return (
-    <div className="group rounded-xl border border-slate-700/50 bg-slate-800/40 p-5 transition-all hover:border-violet-500/30 hover:bg-slate-800/70">
+    <div className="group rounded-xl border border-border bg-surface p-5 transition-all hover:border-violet-500/30 hover:bg-surface-hover">
       <div className="mb-3 flex items-start justify-between">
         <div>
-          <p className="mb-0.5 text-xs text-slate-500">Rank #{rank}</p>
-          <p className="font-mono text-sm font-semibold text-slate-100">{c.candidate_id}</p>
+          <p className="mb-0.5 text-xs text-muted-foreground">Rank #{rank}</p>
+          <p className="font-mono text-sm font-semibold text-foreground">{c.candidate_id}</p>
         </div>
         <span className={cn("text-2xl font-bold", scoreColorClass(c.final_score))}>
           {formatScore(c.final_score)}
@@ -32,9 +32,9 @@ export function CandidateCard({ candidate: c, rank }: CandidateCardProps) {
           { label: "Exp", val: c.sub_scores.experience },
           { label: "Edu", val: c.sub_scores.education },
         ].map(({ label, val }) => (
-          <div key={label} className="rounded-lg bg-slate-700/30 py-1.5">
+          <div key={label} className="rounded-lg bg-border py-1.5">
             <p className={cn("font-semibold", scoreColorClass(val))}>{formatScore(val)}</p>
-            <p className="text-[10px] text-slate-500">{label}</p>
+            <p className="text-[10px] text-muted-foreground">{label}</p>
           </div>
         ))}
       </div>
@@ -43,7 +43,7 @@ export function CandidateCard({ candidate: c, rank }: CandidateCardProps) {
       {(c.reasons.top_matching_skills ?? []).length > 0 && (
         <div className="mb-3 flex flex-wrap gap-1">
           {c.reasons.top_matching_skills.slice(0, 4).map((s) => (
-            <span key={s} className="rounded bg-violet-600/15 px-1.5 py-0.5 text-[10px] text-violet-400">
+            <span key={s} className="rounded bg-violet-600/15 px-1.5 py-0.5 text-[10px] text-accent-fg">
               {s}
             </span>
           ))}
@@ -52,7 +52,7 @@ export function CandidateCard({ candidate: c, rank }: CandidateCardProps) {
 
       <Link
         href={`/candidates/${c.candidate_id}`}
-        className="inline-flex items-center gap-1 text-xs text-violet-400 opacity-0 transition group-hover:opacity-100"
+        className="inline-flex items-center gap-1 text-xs text-accent-fg opacity-0 transition group-hover:opacity-100"
       >
         View details <ArrowRight className="h-3 w-3" />
       </Link>

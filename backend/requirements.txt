@@ -3,3 +3,13 @@ uvicorn>=0.30.0
 pydantic>=2.0.0
 pydantic-settings>=2.0.0
 python-docx>=1.1.0
+python-multipart>=0.0.9
+pypdf>=5.0.0
+python-dotenv>=1.0.0
+supabase>=2.34.0
+
+# ai_engine is now imported in-process (see app/core/ai_engine_bootstrap.py) for
+# real-time resume parsing/embedding/scoring, so its runtime deps are needed here too.
+sentence-transformers>=2.2.0
+faiss-cpu>=1.7.4
+numpy<2.0.0

@@ -36,6 +36,15 @@ logs/
 ai_engine/models/*
 !ai_engine/models/.gitkeep
 
+# Uploaded resumes / local job store (user-submitted content, local-only storage
+# until Phase 5 moves this to Supabase Storage/Postgres — see implementation.md)
+uploads/resumes/*
+uploads/job_descriptions/*
+uploads/exports/*
+!uploads/resumes/.gitkeep
+!uploads/job_descriptions/.gitkeep
+!uploads/exports/.gitkeep
+
 # Node (Frontend)
 node_modules/
 dist/

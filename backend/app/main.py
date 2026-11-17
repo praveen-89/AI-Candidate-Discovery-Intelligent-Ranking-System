@@ -38,6 +38,18 @@ def create_app() -> FastAPI:
         logger.info(f"Starting {settings.PROJECT_NAME} v{settings.VERSION}...")
         logger.info(f"Environment: {settings.ENVIRONMENT}")
 
+        import asyncio
+        from app.services import ai_runtime
+
+        try:
+            await asyncio.to_thread(ai_runtime.init_runtime)
+        except Exception:
+            logger.exception(
+                "AI engine runtime failed to initialize at startup. "
+                "Resume upload/scoring endpoints will attempt to initialize it "
+                "lazily on first use, and may fail if the FAISS cache/model are unavailable."
+            )
+
     @app.on_event("shutdown")
     async def shutdown_event():
         logger.info("Shutting down application...")

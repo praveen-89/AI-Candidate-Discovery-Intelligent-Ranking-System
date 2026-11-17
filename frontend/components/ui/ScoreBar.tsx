@@ -22,12 +22,12 @@ export function ScoreBar({
   return (
     <div className={cn("w-full", className)}>
       <div className="mb-1 flex items-center justify-between text-sm">
-        <span className="font-medium text-slate-300">{label}</span>
+        <span className="font-medium text-muted-foreground">{label}</span>
         {showPercentage && (
-          <span className="text-xs font-semibold text-slate-400">{pct}%</span>
+          <span className="text-xs font-semibold text-muted-foreground">{pct}%</span>
         )}
       </div>
-      <div className="h-2 w-full overflow-hidden rounded-full bg-slate-700/60">
+      <div className="h-2 w-full overflow-hidden rounded-full bg-border">
         <div
           className={cn(
             "h-full rounded-full transition-all duration-700 ease-out",

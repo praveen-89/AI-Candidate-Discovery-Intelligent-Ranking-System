@@ -36,17 +36,17 @@ const VARIANT_MAP: Record<string, StatusVariant> = {
 };
 
 const VARIANT_STYLES: Record<StatusVariant, string> = {
-  ready: "bg-emerald-500/15 text-emerald-400 border-emerald-500/30",
-  healthy: "bg-emerald-500/15 text-emerald-400 border-emerald-500/30",
-  loaded: "bg-sky-500/15 text-sky-400 border-sky-500/30",
-  success: "bg-emerald-500/15 text-emerald-400 border-emerald-500/30",
-  warning: "bg-amber-500/15 text-amber-400 border-amber-500/30",
-  error: "bg-red-500/15 text-red-400 border-red-500/30",
-  offline: "bg-slate-500/15 text-slate-400 border-slate-500/30",
-  running: "bg-violet-500/15 text-violet-400 border-violet-500/30",
-  missing: "bg-red-500/15 text-red-400 border-red-500/30",
-  not_ready: "bg-red-500/15 text-red-400 border-red-500/30",
-  unknown: "bg-slate-500/15 text-slate-400 border-slate-500/30",
+  ready: "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border-emerald-500/30",
+  healthy: "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border-emerald-500/30",
+  loaded: "bg-sky-500/15 text-sky-600 dark:text-sky-400 border-sky-500/30",
+  success: "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border-emerald-500/30",
+  warning: "bg-amber-500/15 text-amber-600 dark:text-amber-400 border-amber-500/30",
+  error: "bg-red-500/15 text-red-600 dark:text-red-400 border-red-500/30",
+  offline: "bg-muted-foreground/15 text-muted-foreground border-muted-foreground/30",
+  running: "bg-violet-500/15 text-accent-fg border-violet-500/30",
+  missing: "bg-red-500/15 text-red-600 dark:text-red-400 border-red-500/30",
+  not_ready: "bg-red-500/15 text-red-600 dark:text-red-400 border-red-500/30",
+  unknown: "bg-muted-foreground/15 text-muted-foreground border-muted-foreground/30",
 };
 
 const DOT_STYLES: Record<StatusVariant, string> = {
@@ -56,11 +56,11 @@ const DOT_STYLES: Record<StatusVariant, string> = {
   success: "bg-emerald-400",
   warning: "bg-amber-400",
   error: "bg-red-400",
-  offline: "bg-slate-400",
+  offline: "bg-muted-foreground",
   running: "bg-violet-400 animate-pulse",
   missing: "bg-red-400",
   not_ready: "bg-red-400",
-  unknown: "bg-slate-400",
+  unknown: "bg-muted-foreground",
 };
 
 export function StatusBadge({ status, className }: StatusBadgeProps) {

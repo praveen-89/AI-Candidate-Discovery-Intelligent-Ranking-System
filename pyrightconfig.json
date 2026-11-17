@@ -4,7 +4,8 @@
   "venv": ".venv",
   "extraPaths": [
     "e:/India Run Hackathon/India_runs_data_and_ai_challenge/backend",
-    "e:/India Run Hackathon/India_runs_data_and_ai_challenge/ai_engine"
+    "e:/India Run Hackathon/India_runs_data_and_ai_challenge/ai_engine",
+    "e:/India Run Hackathon/India_runs_data_and_ai_challenge/ai_engine/src"
   ],
   "include": [
     "backend",

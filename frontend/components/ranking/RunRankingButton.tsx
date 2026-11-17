@@ -48,7 +48,7 @@ export function RunRankingButton({ onSuccess }: RunRankingButtonProps) {
         className={cn(
           "group relative flex items-center gap-3 overflow-hidden rounded-xl px-8 py-4 font-semibold shadow-lg transition-all",
           state === "idle" && "bg-violet-600 text-white hover:bg-violet-500 hover:shadow-violet-500/25",
-          state === "running" && "bg-slate-700 text-slate-300 cursor-wait",
+          state === "running" && "bg-border text-muted-foreground cursor-wait",
           state === "success" && "bg-emerald-600 text-white",
           state === "error" && "bg-red-600 text-white hover:bg-red-500"
         )}
@@ -82,8 +82,8 @@ export function RunRankingButton({ onSuccess }: RunRankingButtonProps) {
       {/* Status Messages */}
       {state === "success" && stats && (
         <div className="text-center animate-in fade-in slide-in-from-bottom-2">
-          <p className="text-sm font-medium text-emerald-400">Successfully generated new rankings!</p>
-          <p className="mt-1 text-xs text-slate-400">
+          <p className="text-sm font-medium text-emerald-600 dark:text-emerald-400">Successfully generated new rankings!</p>
+          <p className="mt-1 text-xs text-muted-foreground">
             Processed {stats.total.toLocaleString()} candidates in {formatLatency(stats.time)}.
           </p>
         </div>
@@ -91,8 +91,8 @@ export function RunRankingButton({ onSuccess }: RunRankingButtonProps) {
       
       {state === "error" && errorMsg && (
         <div className="max-w-md text-center animate-in fade-in slide-in-from-bottom-2">
-          <p className="text-sm font-medium text-red-400">Failed to execute ranking.</p>
-          <p className="mt-1 text-xs text-slate-400">{errorMsg}</p>
+          <p className="text-sm font-medium text-red-600 dark:text-red-400">Failed to execute ranking.</p>
+          <p className="mt-1 text-xs text-muted-foreground">{errorMsg}</p>
         </div>
       )}
     </div>
